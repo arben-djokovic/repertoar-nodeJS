@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const db = require('./data/database') 
 const  userRoutes = require("./routes/user-routes")
+require('dotenv').config();
 
 const app = express()
 

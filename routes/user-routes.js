@@ -1,9 +1,11 @@
 const express = require("express")
-const { login } = require("../controllers/user-controller")
+const { login, singup, getUserById} = require("../controllers/user-controller")
+const { verifyToken, adminRoute } = require("../middlewares/protected")
 
 const app = express.Router()
 
-app.get("/login", login)
-app.get("/singup", login)
+app.post("/login", login)
+app.post("/singup", singup)
+app.get("/:id", verifyToken, adminRoute,  getUserById)
 
 module.exports = app

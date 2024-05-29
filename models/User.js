@@ -1,30 +1,48 @@
 
 const db = require("../data/database")
-
+const { ObjectId } = require('mongodb');
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 class User {
     constructor( username, password, id, isAdmin){
         this.username = username
-        this.password = password // hashed password
+        this.password = password 
         this.id = id
         this.isAdmin = isAdmin
     }
     async login(){
         let result = await db.getDb().collection("user").find({username: this.username}).toArray()
-        result = result.find(el => el.password == this.password)
+        result = result.find(el => bcrypt.compareSync(this.password, el.password))
         if(!result){
-            return res.status(401).json({ message: 'Invalid username or password' });
+            return { message: 'Invalid username or password' };
         }
+        console.log(result)
+        const token = jwt.sign({_id: result._id, username: result.username, "isAdmin": result.isAdmin ? true : false}, process.env.SECRET_KEY, { expiresIn: '1m'})
         return {
-            user: result
+            token: token
         }
     }
     async addUser(){
+        const cryptedPassword = bcrypt.hashSync(this.password, 12)
+        const findUser = await this.getByUsername(this.username)
+        if(findUser[0]){
+            return { msg: "User vec postoji"}
+        }
         const result = await db.getDb().collection("user").insertOne({
             "username": this.username,
-            "password": this.password,
-            "isAdmin": this.isAdmin
+            "password": cryptedPassword,
+            "isAdmin": this.isAdmin ? true : false
         })
-        console.log(result)
+        return result
+    }
+
+    async getByUsername(username){
+        const result = await db.getDb().collection("user").find({username: username}).toArray()
+        return result
+    }
+    static async getById(id){
+        const result = await db.getDb().collection("user").find({_id: new ObjectId(id)}).toArray()
+        return result[0]
     }
 }
 module.exports = User
