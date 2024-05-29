@@ -1,6 +1,5 @@
 const db = require("../data/database")
 const { ObjectId } = require('mongodb');
-const jwt = require("jsonwebtoken")
 
 
 class Playlist{

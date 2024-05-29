@@ -1,16 +1,8 @@
 const express = require("express")
-const Artist = require("../models/Artist")
 const { adminRoute } = require("../middlewares/protected")
+const { addArtist, deleteArtist } = require("../controllers/artist-controller")
 const app = express.Router()
 
-app.post("/add", adminRoute, async(req, res, next) => {
-    try{
-        const newArtist = new Artist(req.body.name)
-        const result = await newArtist.addArtist()
-        res.json(result)
-    }catch(err){
-        next(err)
-        return
-    }
-})
+app.post("/add", adminRoute, addArtist)
+app.delete("/:id", adminRoute, deleteArtist)
 module.exports = app
