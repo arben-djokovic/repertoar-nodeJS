@@ -1,4 +1,5 @@
 const db = require("../data/database")
+const { ObjectId } = require('mongodb');
 
 
 class Playlist{
@@ -17,6 +18,29 @@ class Playlist{
         })
         return result
     }
+
+
+    static async addSong(playlist_id, song_id){
+        const playlistObjectId = new ObjectId(playlist_id);
+        const songObjectId = new ObjectId(song_id);
+
+        const result2 = await db.getDb().collection("playlist").find({
+            _id: playlistObjectId,
+            songIds: { $in: [songObjectId] }
+        }).toArray()
+        if(result2[0]){
+            return {message: "Pjesma se vec nalazi u playlisti"}
+        }
+
+        const result = await db.getDb().collection('playlist').updateOne(
+            { _id: playlistObjectId },
+            { $push: { songIds: songObjectId } }
+        );
+        return result
+    }
+
+
+
 
 }
 

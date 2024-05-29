@@ -15,6 +15,17 @@ const createPlaylist = async(req, res, next) => {
         return
     }
 }
+
+const addSongToPlaylist = async (req, res, next) => {
+    try{
+        const result = await Playlist.addSong(req.params.playlistid, req.body.song_id)
+        res.json(result)
+    }catch(err){
+        next(err)
+        return
+    }
+}
 module.exports = {
-    createPlaylist
+    createPlaylist,
+    addSongToPlaylist
 }
