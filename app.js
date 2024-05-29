@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const db = require('./data/database') 
 const  userRoutes = require("./routes/user-routes")
+const  genreRoutes = require("./routes/genre-routes")
 require('dotenv').config();
 
 const app = express()
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use('/user', userRoutes)
+app.use('/genre', genreRoutes)
 
 db.connection().then(() => {
     app.listen(PORT)
