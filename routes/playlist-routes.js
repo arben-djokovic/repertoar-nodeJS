@@ -4,7 +4,7 @@ const { verifyToken } = require("../middlewares/protected")
 const app = express.Router()
 
 app.post("/create", verifyToken,  createPlaylist)
-app.post("/add-song/:playlistid", verifyToken, addSongToPlaylist)
+app.patch("/add-song/:playlistid", verifyToken, addSongToPlaylist)
 
 
 module.exports = app
