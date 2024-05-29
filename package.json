@@ -1,0 +1,35 @@
+{
+  "name": "repertoar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arben-djokovic/repertoar-nodeJS.git"
+  },
+  "keywords": [
+    "repertoar",
+    "muzika",
+    "song",
+    "gitara"
+  ],
+  "author": "Arben Djokovic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arben-djokovic/repertoar-nodeJS/issues"
+  },
+  "homepage": "https://github.com/arben-djokovic/repertoar-nodeJS#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.6.2",
+    "nodemon": "^3.1.2"
+  }
+}
