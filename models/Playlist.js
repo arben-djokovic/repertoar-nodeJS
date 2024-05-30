@@ -41,7 +41,6 @@ class Playlist{
             );
             return result
         }else{
-            console.log(userInfo._id)
             const result = await db.getDb().collection('playlist').updateOne(
                 { 
                     $and: [
@@ -57,15 +56,58 @@ class Playlist{
 
     static async getMinePlaylists (user_id){
         const userIdObjectId = new ObjectId(user_id);
-        const result = await db.getDb().collection("playlist").find({user_id: userIdObjectId}).toArray()
+        const result = await db.getDb().collection("playlist").aggregate([
+            {
+                $match: { user_id: userIdObjectId } 
+            },
+            {
+                $lookup: {
+                    from: "song",
+                    localField: "songIds",
+                    foreignField: "_id",
+                    as: "songs"
+                }
+            },
+            {
+                $addFields: {
+                    songs: "$songs" 
+                }
+            }
+        ]).toArray();
         return result
     }
 
     static async getPublicPlaylists (){
-        const result = await db.getDb().collection("playlist").find({isPublic: true}).toArray()
+        const result = await db.getDb().collection("playlist").aggregate([
+            {
+                $match: { isPublic: true } 
+            },
+            {
+                $lookup: {
+                    from: "song",
+                    localField: "songIds",
+                    foreignField: "_id",
+                    as: "songs"
+                }
+            },
+            {
+                $addFields: {
+                    songs: "$songs" 
+                }
+            }
+        ]).toArray();
         return result
     }
 
+    static async deletePlaylistById(playlistid, user_id){
+        const result = await db.getDb().collection("playlist").deleteOne({_id: new ObjectId(playlistid), user_id: new ObjectId(user_id)})
+        if(result.deletedCount == 0){
+            return {
+                message: "Playlista nije izbrisana"
+            }
+        }
+        return result
+    }
 }
 
 module.exports = Playlist

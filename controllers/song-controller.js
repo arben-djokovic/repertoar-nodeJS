@@ -34,8 +34,19 @@ const getSong = async(req, res, next) => {
         return
     }
 }
+
+const deleteSong = async(req, res, next) => {
+    try{
+        const result = await Song.deleteSong(req.params.songid)
+        res.json(result)
+    }catch(err){
+        next(err)
+        return
+    }
+}
 module.exports = {
     addSong,
     getSongs,
-    getSong
+    getSong,
+    deleteSong
 }

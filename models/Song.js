@@ -63,6 +63,12 @@ class Song {
         const result = await db.getDb().collection("song").find({_id: songidObjectId}).toArray()
         return result[0]
     }
+
+    static async deleteSong(songid){
+        const songidObjectId= new ObjectId(songid);
+        const result = await db.getDb().collection("song").deleteOne({_id: songidObjectId})
+        return result
+    }
 }
 
 module.exports = Song

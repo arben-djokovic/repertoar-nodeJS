@@ -52,9 +52,23 @@ const getPublicPlaylists = async(req, res, next) => {
         return
     }
 }
+const deletePlaylist = async(req, res, next) => {
+    const bearerHeader = req.headers['authorization'];
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1];
+    const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
+    try{
+        const result = await Playlist.deletePlaylistById(req.params.playlistid, veryf._id)
+        res.json(result)
+    }catch(err){
+        next(err)
+        return
+    }
+}
 module.exports = {
     createPlaylist,
     addSongToPlaylist,
     getMinePlaylists,
+    deletePlaylist,
     getPublicPlaylists
 }

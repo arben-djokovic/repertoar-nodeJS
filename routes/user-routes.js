@@ -6,6 +6,6 @@ const app = express.Router()
 
 app.post("/login", login)
 app.post("/singup", singup)
-app.get("/:id", verifyToken, adminRoute,  getUserById)
+app.get("/:id", verifyToken, getUserById)
 
 module.exports = app
