@@ -25,7 +25,17 @@ const getSongs = async(req, res, next) => {
         return
     }
 }
+const getSong = async(req, res, next) => {
+    try{
+        const result = await Song.getSong(req.params.songid)
+        res.json(result)
+    }catch(err){
+        next(err)
+        return
+    }
+}
 module.exports = {
     addSong,
-    getSongs
+    getSongs,
+    getSong
 }

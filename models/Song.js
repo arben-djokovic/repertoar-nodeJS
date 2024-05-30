@@ -57,6 +57,12 @@ class Song {
         ]).toArray();
         return result
     } 
+
+    static async getSong(songid){
+        const songidObjectId= new ObjectId(songid);
+        const result = await db.getDb().collection("song").find({_id: songidObjectId}).toArray()
+        return result[0]
+    }
 }
 
 module.exports = Song
