@@ -55,8 +55,16 @@ class Playlist{
         }
     }
 
+    static async getMinePlaylists (user_id){
+        const userIdObjectId = new ObjectId(user_id);
+        const result = await db.getDb().collection("playlist").find({user_id: userIdObjectId}).toArray()
+        return result
+    }
 
-
+    static async getPublicPlaylists (){
+        const result = await db.getDb().collection("playlist").find({isPublic: true}).toArray()
+        return result
+    }
 
 }
 
