@@ -1,4 +1,5 @@
 
+const { ObjectId } = require("mongodb");
 const Playlist = require("../models/Playlist")
 const jwt = require("jsonwebtoken")
 
@@ -22,7 +23,7 @@ const addSongToPlaylist = async (req, res, next) => {
     const bearerToken = bearer[1];
     const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
     try{
-        const result = await Playlist.addSong(req.params.playlistid, req.body.song_id, veryf)
+        const result = await Playlist.addSong(req.params.id, req.body.song_id, veryf)
         res.json(result)
     }catch(err){
         next(err)
@@ -58,7 +59,19 @@ const deletePlaylist = async(req, res, next) => {
     const bearerToken = bearer[1];
     const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
     try{
-        const result = await Playlist.deletePlaylistById(req.params.playlistid, veryf._id)
+        const result = await Playlist.deletePlaylistById(req.params.id, veryf._id)
+        res.json(result)
+    }catch(err){
+        next(err)
+        return
+    }
+}
+const editPlaylistName = async(req, res, next) => {
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid playlist ID' });
+    }
+    try{
+        const result = await Playlist.changeName(req.params.id, req.body.newName)
         res.json(result)
     }catch(err){
         next(err)
@@ -70,5 +83,6 @@ module.exports = {
     addSongToPlaylist,
     getMinePlaylists,
     deletePlaylist,
-    getPublicPlaylists
+    getPublicPlaylists,
+    editPlaylistName
 }

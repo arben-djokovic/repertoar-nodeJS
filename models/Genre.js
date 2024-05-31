@@ -20,6 +20,16 @@ class Genre {
         })
         return result
     }
+    static async updateGenre(genre_id, newName){
+        if(!newName){
+            return {message: "Novo ime nije unijeto"}
+        }
+        const result = await db.getDb().collection("genre").updateOne({_id: new ObjectId(genre_id)}, {$set: {name: newName}})
+        if(result.modifiedCount == 0){
+            return {message: "Genre ne postoji"}
+        }
+        return result
+    }
 }
 
 module.exports = Genre

@@ -108,6 +108,16 @@ class Playlist{
         }
         return result
     }
+    static async changeName(id, newName){
+        if(!newName){
+            return {message: "Novo ime nije unijeto"}
+        }
+        const result = await db.getDb().collection("playlist").updateOne({_id: new ObjectId(id)}, {$set: {name: newName}})
+        if(result.modifiedCount == 0){
+            return {message: "Playlist with that id doesnt exist"}
+        } 
+        return result
+    }
 }
 
 module.exports = Playlist

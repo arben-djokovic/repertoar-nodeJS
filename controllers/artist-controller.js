@@ -21,7 +21,17 @@ const deleteArtist = async(req, res, next) => {
         return
     }
 }
+const editArtistName = async(req, res, next) => {
+    try{
+        const result = await Artist.updateName(req.params.id, req.body.newName)
+        res.json(result)
+    }catch(err){
+        next(err)
+        return
+    }
+}
 module.exports = {
     addArtist,
-    deleteArtist
+    deleteArtist,
+    editArtistName
 }

@@ -27,7 +27,7 @@ const getSongs = async(req, res, next) => {
 }
 const getSong = async(req, res, next) => {
     try{
-        const result = await Song.getSong(req.params.songid)
+        const result = await Song.getSong(req.params.id)
         res.json(result)
     }catch(err){
         next(err)
@@ -37,7 +37,7 @@ const getSong = async(req, res, next) => {
 
 const deleteSong = async(req, res, next) => {
     try{
-        const result = await Song.deleteSong(req.params.songid)
+        const result = await Song.deleteSong(req.params.id)
         res.json(result)
     }catch(err){
         next(err)

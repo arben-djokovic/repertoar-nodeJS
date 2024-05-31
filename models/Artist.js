@@ -21,6 +21,16 @@ class Artist {
         })
         return result
     }
+    static async updateName(artist_id, newName){
+        if(!newName){
+            return { message: "Nije unijeto ime"}
+        }
+        const result = await db.getDb().collection("artist").updateOne({_id: new ObjectId(artist_id)}, {$set: {name: newName}})
+        if(result.modifiedCount == 0){
+            return { message: "Autor nije pronadjen"}
+        }
+        return result
+    }
 }
 
 module.exports = Artist

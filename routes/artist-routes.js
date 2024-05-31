@@ -1,8 +1,9 @@
 const express = require("express")
-const { adminRoute } = require("../middlewares/protected")
-const { addArtist, deleteArtist } = require("../controllers/artist-controller")
+const { adminRoute, checkId } = require("../middlewares/middlewares")
+const { addArtist, deleteArtist, editArtistName } = require("../controllers/artist-controller")
 const app = express.Router()
 
 app.post("/add", adminRoute, addArtist)
-app.delete("/:id", adminRoute, deleteArtist)
+app.delete("/:id", adminRoute, checkId, deleteArtist)
+app.patch("/:id", adminRoute, checkId, editArtistName)
 module.exports = app

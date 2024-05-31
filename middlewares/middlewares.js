@@ -1,5 +1,6 @@
 
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { ObjectId } = require("mongodb");
 
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
@@ -31,7 +32,6 @@ function adminRoute(req, res, next) {
         try{
             const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
             if(veryf.isAdmin == true){
-
                 next();
             }else{
                 return res.status(401).json({ message: 'Admin route' });
@@ -47,7 +47,14 @@ function adminRoute(req, res, next) {
         res.sendStatus(403);
     }
 }
+const checkId = (req, res, next) => {
+    if(!ObjectId.isValid(req.params.id)){
+        return res.status(400).json({ message: 'Invalid ID' });
+    }
+    next()
+}
 module.exports = {
     verifyToken,
-    adminRoute
+    adminRoute,
+    checkId
 }
