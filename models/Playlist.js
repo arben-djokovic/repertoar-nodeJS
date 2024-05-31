@@ -54,11 +54,12 @@ class Playlist{
         }
     }
 
-    static async getMinePlaylists (user_id){
+    static async getMinePlaylists (user_id, searchQuery){
         const userIdObjectId = new ObjectId(user_id);
+        const matchQuery = { name: { $regex: searchQuery, $options: 'i' }, user_id: userIdObjectId };
         const result = await db.getDb().collection("playlist").aggregate([
             {
-                $match: { user_id: userIdObjectId } 
+                $match: matchQuery
             },
             {
                 $lookup: {
@@ -77,10 +78,11 @@ class Playlist{
         return result
     }
 
-    static async getPublicPlaylists (){
+    static async getPublicPlaylists (searchQuery){
+        const matchQuery = { name: { $regex: searchQuery, $options: 'i' }, isPublic: true };
         const result = await db.getDb().collection("playlist").aggregate([
             {
-                $match: { isPublic: true } 
+                $match: matchQuery
             },
             {
                 $lookup: {
@@ -108,13 +110,13 @@ class Playlist{
         }
         return result
     }
-    static async changeName(id, newName){
-        if(!newName){
-            return {message: "Novo ime nije unijeto"}
+    static async updatePlaylist(id, updates){
+        if(!updates){
+            return {message: "Niste unijeli podatke za edit"}
         }
-        const result = await db.getDb().collection("playlist").updateOne({_id: new ObjectId(id)}, {$set: {name: newName}})
+        const result = await db.getDb().collection("playlist").updateOne({_id: new ObjectId(id)}, {$set: updates})
         if(result.modifiedCount == 0){
-            return {message: "Playlist with that id doesnt exist"}
+            return {message: "Playlista nije izmijenjena"}
         } 
         return result
     }

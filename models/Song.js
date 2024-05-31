@@ -20,7 +20,13 @@ class Song {
         return result
     }
 
-    static async getAllSongs(){
+    static async getAllSongs(searchQuery){
+        const matchQuery = {
+            $or: [
+                { title: { $regex: searchQuery, $options: 'i' } }, 
+                { 'artist.name': { $regex: searchQuery, $options: 'i' } }
+            ]
+        };
         const result = await db.getDb().collection('song').aggregate([
             {
                 $lookup: {
@@ -53,6 +59,9 @@ class Song {
                         $ifNull: ['$genre', []] 
                     }
                 }
+            },
+            {
+                $match: matchQuery
             }
         ]).toArray();
         return result

@@ -16,11 +16,11 @@ const addSong = async(req, res, next) => {
 }
 
 const getSongs = async(req, res, next) => {
+    const searchQuery = req.query.search || "";
     try{
-        const result = await Song.getAllSongs()
+        const result = await Song.getAllSongs(searchQuery)
         res.json(result)
     }catch(err){
-        // res.sendStatus(500)
         next(err)
         return
     }

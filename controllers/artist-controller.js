@@ -1,6 +1,16 @@
 
 const Artist = require("../models/Artist")
 
+const getAllArtist = async(req, res, next) => {
+    const searchQuery = req.query.search || ""
+    try{
+        const result = await Artist.getAllArtist(searchQuery)
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
 const addArtist = async(req, res, next) => {
     try{
         const newArtist = new Artist(req.body.name)
@@ -33,5 +43,6 @@ const editArtistName = async(req, res, next) => {
 module.exports = {
     addArtist,
     deleteArtist,
-    editArtistName
+    editArtistName,
+    getAllArtist
 }

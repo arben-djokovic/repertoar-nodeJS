@@ -6,6 +6,13 @@ class Genre {
         this.name = name
         this.id = id
     }
+    static async getAllGenres(searchQuery){
+        const matchQuery = {name: {$regex: searchQuery, $options: 'i' }}
+        const result = await db.getDb().collection("genre").aggregate([{
+            $match: matchQuery
+        }]).toArray()
+        return result
+    }
 
     async addGenre(){
         const result = await db.getDb().collection("genre").insertOne({
@@ -26,7 +33,7 @@ class Genre {
         }
         const result = await db.getDb().collection("genre").updateOne({_id: new ObjectId(genre_id)}, {$set: {name: newName}})
         if(result.modifiedCount == 0){
-            return {message: "Genre ne postoji"}
+            return {message: "Genre nije izmijenjen"}
         }
         return result
     }

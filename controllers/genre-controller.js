@@ -31,8 +31,19 @@ const editGenre = async(req, res, next) => {
         return
     }
 }
+const  getAllGenres = async(req, res, next) => {
+    const searchQuery = req.query.search || ""
+    try{
+        const result = await Genre.getAllGenres(searchQuery)
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
 module.exports = {
     addGenre,
     deleteGenre,
-    editGenre
+    editGenre,
+    getAllGenres
 }

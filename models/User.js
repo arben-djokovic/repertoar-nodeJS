@@ -16,7 +16,6 @@ class User {
         if(!result){
             return { message: 'Invalid username or password' };
         }
-        console.log(result)
         const token = jwt.sign({_id: result._id, username: result.username, "isAdmin": result.isAdmin ? true : false}, process.env.SECRET_KEY, { expiresIn: '1h'})
         return {
             token: token

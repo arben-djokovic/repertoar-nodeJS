@@ -10,7 +10,7 @@ function verifyToken(req, res, next) {
         const bearerToken = bearer[1];
         try{
             const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
-            console.log(veryf)
+            req.body.tokenUserInfo = veryf
             next();
         }catch(err){
             if (err.name === 'TokenExpiredError') {
@@ -32,6 +32,7 @@ function adminRoute(req, res, next) {
         try{
             const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
             if(veryf.isAdmin == true){
+                req.body.tokenUserInfo = veryf
                 next();
             }else{
                 return res.status(401).json({ message: 'Admin route' });
