@@ -78,6 +78,17 @@ class Song {
         const result = await db.getDb().collection("song").deleteOne({_id: songidObjectId})
         return result
     }
+
+    static async editSong(id, updates){
+        if(!updates){
+            return {message: "Niste unijeli podatke za edit"}
+        }
+        const result = await db.getDb().collection("song").updateOne({_id: new ObjectId(id)}, {$set: updates})
+        if(result.modifiedCount == 0){
+            return {message: "Pjesma nije izmijenjena"}
+        } 
+        return result
+    }
 }
 
 module.exports = Song

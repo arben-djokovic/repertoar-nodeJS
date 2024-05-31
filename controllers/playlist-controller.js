@@ -52,9 +52,6 @@ const deletePlaylist = async(req, res, next) => {
     }
 }
 const editPlaylist = async(req, res, next) => {
-    if (!ObjectId.isValid(req.params.id)) {
-        return res.status(400).json({ message: 'Invalid playlist ID' });
-    }
     const fieldsToUpdate = ['name', 'user_id', 'isPublic'];
     const filteredUpdates = {};
     for (const key in req.body) {

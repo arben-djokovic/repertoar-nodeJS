@@ -44,9 +44,26 @@ const deleteSong = async(req, res, next) => {
         return
     }
 }
+const editSong = async(req, res, next) => {
+    const fieldsToUpdate = ['title', 'artist_id', 'text', 'genre_id'];
+    const filteredUpdates = {};
+    for (const key in req.body) {
+        if (fieldsToUpdate.includes(key)) {
+            filteredUpdates[key] = req.body[key];
+        }
+    }
+    try{
+        const result = await Song.editSong(req.params.id, filteredUpdates)
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
 module.exports = {
     addSong,
     getSongs,
     getSong,
-    deleteSong
+    deleteSong,
+    editSong
 }
