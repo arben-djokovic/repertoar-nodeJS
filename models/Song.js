@@ -29,7 +29,7 @@ class Song {
             ]
         };
         if (genreQuery.length > 0) {
-            matchQuery['genre_id'] = genreQuery;
+            matchQuery['genre_id'] = new ObjectId(genreQuery);
         }
         
 
