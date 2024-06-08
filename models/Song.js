@@ -28,11 +28,12 @@ class Song {
                 { 'artist.name': { $regex: searchQuery, $options: 'i' } }
             ]
         };
-        if(genreQuery.length > 0){
-            matchQuery.$or[3] = {
-                genre: { $regex: genreQuery, $options: 'i' }
-            }
+        if (genreQuery.length > 0) {
+            matchQuery['genre_id'] = genreQuery;
         }
+        
+
+        console.log(matchQuery)
         const result = await db.getDb().collection('song').aggregate([
             {
                 $lookup: {
