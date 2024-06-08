@@ -17,8 +17,9 @@ const addSong = async(req, res, next) => {
 
 const getSongs = async(req, res, next) => {
     const searchQuery = req.query.search || "";
+    const genreQuery = req.query.genre || "";
     try{
-        const result = await Song.getAllSongs(searchQuery)
+        const result = await Song.getAllSongs(searchQuery, genreQuery)
         res.json(result)
     }catch(err){
         next(err)

@@ -20,13 +20,19 @@ class Song {
         return result
     }
 
-    static async getAllSongs(searchQuery){
+    static async getAllSongs(searchQuery, genreQuery){
         const matchQuery = {
             $or: [
                 { title: { $regex: searchQuery, $options: 'i' } }, 
+                { text: { $regex: searchQuery, $options: 'i' } }, 
                 { 'artist.name': { $regex: searchQuery, $options: 'i' } }
             ]
         };
+        if(genreQuery.length > 0){
+            matchQuery.$or[3] = {
+                genre: { $regex: genreQuery, $options: 'i' }
+            }
+        }
         const result = await db.getDb().collection('song').aggregate([
             {
                 $lookup: {
