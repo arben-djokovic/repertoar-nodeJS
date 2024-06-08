@@ -13,9 +13,9 @@ class Song {
     async addSong(){
         const result = await db.getDb().collection("song").insertOne({
             title: this.title,
-            artist_id: new ObjectId(this.artist_id),
+            artist_id: this.artist_id && new ObjectId(this.artist_id),
             text: this.text,
-            genre_id: new ObjectId(this.genre_id)
+            genre_id: this.genre_id && new ObjectId(this.genre_id) 
         })
         return result
     }
