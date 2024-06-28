@@ -1,6 +1,6 @@
 const db = require("../data/database")
 const { ObjectId } = require('mongodb');
-
+const jwt = require('jsonwebtoken')
 
 class Playlist{
     constructor(name, user_id, isPublic, songIds){
@@ -20,6 +20,31 @@ class Playlist{
         return result
     }
 
+    static async getPlaylist(id, req){
+        let or = [{isPublic: true}]
+        const bearerHeader = req.headers['authorization'];
+
+        if (typeof bearerHeader !== 'undefined') {
+            const bearer = bearerHeader.split(' ');
+            const bearerToken = bearer[1];
+            try{
+                const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
+                or.push({ user_id: new ObjectId(veryf._id) });
+                console.log(veryf)
+            }catch(err){
+                console.log(err)
+            }
+        }
+        const result = await db.getDb().collection("playlist").aggregate([
+            {
+                $match: {
+                    _id: new ObjectId(id),
+                    $or: or
+                }
+            }
+        ]).toArray()
+        return result
+    }
 
     static async addSong(playlist_id, song_id, userInfo){
         const playlistObjectId = new ObjectId(playlist_id);

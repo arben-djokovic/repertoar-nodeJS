@@ -67,11 +67,25 @@ const editPlaylist = async(req, res, next) => {
         return
     }
 }
+
+const getPlaylist = async(req, res, next) => {
+    try{
+        const result = await Playlist.getPlaylist(req.params.id, req)
+        if(result.length == 0){
+            return res.status(401).json({message: "Playlista nije pronadjena"})
+        }
+        res.json(result[0])
+    }catch(err){
+        next(err)
+        return
+    }
+}
 module.exports = {
     createPlaylist,
     addSongToPlaylist,
     getMinePlaylists,
     deletePlaylist,
     getPublicPlaylists,
-    editPlaylist
+    editPlaylist,
+    getPlaylist
 }
