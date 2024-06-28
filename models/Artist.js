@@ -8,14 +8,14 @@ class Artist {
     }
     static async getAllArtist(searchQuery){
         const matchQuery = {name: {$regex: searchQuery, $options: 'i' }}
-        const result = await db.getDb().collection("artist").aggregate([{
+        const result = await db.getDb().collection("artists").aggregate([{
             $match: matchQuery
         }]).toArray()
         return result
     }
 
     async addArtist(){
-        const result = await db.getDb().collection("artist").insertOne({
+        const result = await db.getDb().collection("artists").insertOne({
             name: this.name
         })
         return result
@@ -23,7 +23,7 @@ class Artist {
 
     async deleteArtist(){
         const artistId = new ObjectId(this.id)
-        const result = await db.getDb().collection("artist").deleteOne({
+        const result = await db.getDb().collection("artists").deleteOne({
            _id: artistId
         })
         return result
@@ -32,7 +32,7 @@ class Artist {
         if(!newName){
             return { message: "Nije unijeto ime"}
         }
-        const result = await db.getDb().collection("artist").updateOne({_id: new ObjectId(artist_id)}, {$set: {name: newName}})
+        const result = await db.getDb().collection("artists").updateOne({_id: new ObjectId(artist_id)}, {$set: {name: newName}})
         if(result.modifiedCount == 0){
             return { message: "Izmjene nisu napravljene"}
         }

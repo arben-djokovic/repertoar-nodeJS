@@ -8,21 +8,21 @@ class Genre {
     }
     static async getAllGenres(searchQuery){
         const matchQuery = {name: {$regex: searchQuery, $options: 'i' }}
-        const result = await db.getDb().collection("genre").aggregate([{
+        const result = await db.getDb().collection("genres").aggregate([{
             $match: matchQuery
         }]).toArray()
         return result
     }
 
     async addGenre(){
-        const result = await db.getDb().collection("genre").insertOne({
+        const result = await db.getDb().collection("genres").insertOne({
             name: this.name
         })
         return result
     }
     async deleteGenre(){
         const genreId = new ObjectId(this.id)
-        const result = await db.getDb().collection("genre").deleteOne({
+        const result = await db.getDb().collection("genres").deleteOne({
            _id: genreId
         })
         return result
@@ -31,7 +31,7 @@ class Genre {
         if(!newName){
             return {message: "Novo ime nije unijeto"}
         }
-        const result = await db.getDb().collection("genre").updateOne({_id: new ObjectId(genre_id)}, {$set: {name: newName}})
+        const result = await db.getDb().collection("genres").updateOne({_id: new ObjectId(genre_id)}, {$set: {name: newName}})
         if(result.modifiedCount == 0){
             return {message: "Genre nije izmijenjen"}
         }

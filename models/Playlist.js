@@ -11,7 +11,7 @@ class Playlist{
     }
 
     static async createPlaylist(name, isPublic, user_id){
-        const result = await db.getDb().collection("playlist").insertOne({
+        const result = await db.getDb().collection("playlists").insertOne({
             name: name,
             isPublic: isPublic,
             user_id: new ObjectId(user_id),
@@ -35,7 +35,7 @@ class Playlist{
                 console.log(err)
             }
         }
-        const result = await db.getDb().collection("playlist").aggregate([
+        const result = await db.getDb().collection("playlists").aggregate([
             {
                 $match: {
                     _id: new ObjectId(id),
@@ -51,7 +51,7 @@ class Playlist{
         const songObjectId = new ObjectId(song_id);
         const userIdObjectId = new ObjectId(userInfo._id);
 
-        const result2 = await db.getDb().collection("playlist").find({
+        const result2 = await db.getDb().collection("playlists").find({
             _id: playlistObjectId,
             songIds: { $in: [songObjectId] }
         }).toArray()
@@ -60,13 +60,13 @@ class Playlist{
             return {message: "Pjesma se vec nalazi u playlisti"}
         }
         else if(userInfo.isAdmin){
-            const result = await db.getDb().collection('playlist').updateOne(
+            const result = await db.getDb().collection('playlists').updateOne(
                 { $and: [ {_id: playlistObjectId}, {isPublic: true} ]},
                 { $push: { songIds: songObjectId } }
             );
             return result
         }else{
-            const result = await db.getDb().collection('playlist').updateOne(
+            const result = await db.getDb().collection('playlists').updateOne(
                 { 
                     $and: [
                         { _id: playlistObjectId },
@@ -82,13 +82,13 @@ class Playlist{
     static async getMinePlaylists (user_id, searchQuery){
         const userIdObjectId = new ObjectId(user_id);
         const matchQuery = { name: { $regex: searchQuery, $options: 'i' }, user_id: userIdObjectId };
-        const result = await db.getDb().collection("playlist").aggregate([
+        const result = await db.getDb().collection("playlists").aggregate([
             {
                 $match: matchQuery
             },
             {
                 $lookup: {
-                    from: "song",
+                    from: "songs",
                     localField: "songIds",
                     foreignField: "_id",
                     as: "songs"
@@ -105,13 +105,13 @@ class Playlist{
 
     static async getPublicPlaylists (searchQuery){
         const matchQuery = { name: { $regex: searchQuery, $options: 'i' }, isPublic: true };
-        const result = await db.getDb().collection("playlist").aggregate([
+        const result = await db.getDb().collection("playlists").aggregate([
             {
                 $match: matchQuery
             },
             {
                 $lookup: {
-                    from: "song",
+                    from: "songs",
                     localField: "songIds",
                     foreignField: "_id",
                     as: "songs"
@@ -127,7 +127,7 @@ class Playlist{
     }
 
     static async deletePlaylistById(playlistid, user_id){
-        const result = await db.getDb().collection("playlist").deleteOne({_id: new ObjectId(playlistid), user_id: new ObjectId(user_id)})
+        const result = await db.getDb().collection("playlists").deleteOne({_id: new ObjectId(playlistid), user_id: new ObjectId(user_id)})
         if(result.deletedCount == 0){
             return {
                 message: "Playlista nije izbrisana"
@@ -139,7 +139,7 @@ class Playlist{
         if(!updates){
             return {message: "Niste unijeli podatke za edit"}
         }
-        const result = await db.getDb().collection("playlist").updateOne({_id: new ObjectId(id)}, {$set: updates})
+        const result = await db.getDb().collection("playlists").updateOne({_id: new ObjectId(id)}, {$set: updates})
         if(result.modifiedCount == 0){
             return {message: "Playlista nije izmijenjena"}
         } 
