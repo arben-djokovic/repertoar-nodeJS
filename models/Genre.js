@@ -37,6 +37,10 @@ class Genre {
         }
         return result
     }
+    static async getGenre(genre_id){
+        const result = await db.getDb().collection("genres").findOne({_id: new ObjectId(genre_id)})
+        return result
+    }
 }
 
 module.exports = Genre
