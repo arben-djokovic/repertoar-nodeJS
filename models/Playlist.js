@@ -209,6 +209,16 @@ class Playlist{
         } 
         return result
     }
+    
+    static async removeSong (playlist_id, song_id){
+        const playlistObjectId = new ObjectId(playlist_id);
+        const songObjectId = new ObjectId(song_id);
+        const result = await db.getDb().collection('playlists').updateOne(
+            { _id: playlistObjectId },
+            { $pull: { songIds: songObjectId } }
+        );
+        return result
+    }
 }
 
 module.exports = Playlist
