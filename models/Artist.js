@@ -38,6 +38,11 @@ class Artist {
         }
         return result
     }
+
+    static async getArtist(artist_id){
+        const result = await db.getDb().collection("artists").findOne({_id: new ObjectId(artist_id)})
+        return result
+    }
 }
 
 module.exports = Artist

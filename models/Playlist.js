@@ -20,31 +20,95 @@ class Playlist{
         return result
     }
 
-    static async getPlaylist(id, req){
-        let or = [{isPublic: true}]
+    static async getPlaylist(id, req) {
+        let or = [{ isPublic: true }];
         const bearerHeader = req.headers['authorization'];
-
+      
         if (typeof bearerHeader !== 'undefined') {
-            const bearer = bearerHeader.split(' ');
-            const bearerToken = bearer[1];
-            try{
-                const veryf = jwt.verify(bearerToken, process.env.SECRET_KEY)
-                or.push({ user_id: new ObjectId(veryf._id) });
-                console.log(veryf)
-            }catch(err){
-                console.log(err)
-            }
+          const bearer = bearerHeader.split(' ');
+          const bearerToken = bearer[1];
+          try {
+            const verified = jwt.verify(bearerToken, process.env.SECRET_KEY);
+            or.push({ user_id: new ObjectId(verified._id) });
+          } catch (err) {
+            console.log(err);
+          }
         }
+      
         const result = await db.getDb().collection("playlists").aggregate([
-            {
-                $match: {
-                    _id: new ObjectId(id),
-                    $or: or
-                }
+          {
+            $match: {
+              _id: new ObjectId(id),
+              $or: or
             }
-        ]).toArray()
-        return result
-    }
+          },
+          {
+            $lookup: {
+              from: "songs",
+              localField: "songIds",
+              foreignField: "_id",
+              as: "songs"
+            }
+          },
+          {
+            $unwind: {
+              path: "$songs",
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {
+            $lookup: {
+              from: "artists",
+              localField: "songs.artist_id",
+              foreignField: "_id",
+              as: "songs.artist"
+            }
+          },
+          {
+            $unwind: {
+              path: "$songs.artist",
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {
+            $lookup: {
+              from: "genres",
+              localField: "songs.genre_id",
+              foreignField: "_id",
+              as: "songs.genre"
+            }
+          },
+          {
+            $unwind: {
+              path: "$songs.genre",
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {
+            $addFields: {
+              "songs.artist": {
+                $ifNull: ["$songs.artist", { name: "undefined" }]
+              },
+              "songs.genre": {
+                $ifNull: ["$songs.genre", { name: "undefined" }]
+              }
+            }
+          },
+          {
+            $group: {
+              _id: "$_id",
+              name: { $first: "$name" },
+              isPublic: { $first: "$isPublic" },
+              user_id: { $first: "$user_id" },
+              songIds: { $first: "$songIds" },
+              songs: { $push: "$songs" }
+            }
+          }
+        ]).toArray();
+      
+        return result;
+      }
+      
 
     static async addSong(playlist_id, song_id, userInfo){
         const playlistObjectId = new ObjectId(playlist_id);
