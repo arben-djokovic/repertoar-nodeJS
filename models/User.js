@@ -18,7 +18,8 @@ class User {
         }
         const token = jwt.sign({_id: result._id, username: result.username, "isAdmin": result.isAdmin ? true : false}, process.env.SECRET_KEY, { expiresIn: '30d'})
         return {
-            token: token
+            token: token,
+            favourites: result.favourites ? result.favourites : []
         }
     }
     async addUser(){
@@ -30,7 +31,8 @@ class User {
         const result = await db.getDb().collection("users").insertOne({
             "username": this.username,
             "password": cryptedPassword,
-            "isAdmin": this.isAdmin ? true : false
+            "isAdmin": this.isAdmin ? true : false,
+            "favourites": []
         })
         return result
     }

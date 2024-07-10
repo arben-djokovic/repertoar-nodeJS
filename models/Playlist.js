@@ -219,6 +219,47 @@ class Playlist{
         );
         return result
     }
+
+    static async addToFavourites (playlist_id, user_id){
+        const playlistObjectId = new ObjectId(playlist_id);
+        const userIdObjectId = new ObjectId(user_id);
+        const result = await db.getDb().collection('users').updateOne(
+            { _id: userIdObjectId },
+            { $push: { favourites: playlistObjectId } }
+        );
+        return result
+    }
+
+    static async removeFromFavourites (playlist_id, user_id){
+        const playlistObjectId = new ObjectId(playlist_id);
+        const userIdObjectId = new ObjectId(user_id);
+        const result = await db.getDb().collection('users').updateOne(
+            { _id: userIdObjectId },
+            { $pull: { favourites: playlistObjectId } }
+        );
+        return result
+    }
+
+    static async getMyFavourites(user_id, searchQuery){
+        const userIdObjectId = new ObjectId(user_id);
+        const result = await db.getDb().collection('users').aggregate([
+            { $match: { _id: userIdObjectId } },
+            {
+                $lookup: {
+                    from: "playlists",
+                    localField: "favourites",
+                    foreignField: "_id",
+                    as: "playlists"
+                }
+            },
+            {
+                $addFields: {
+                    playlists: "$playlists" 
+                }
+            }
+        ]).toArray();
+        return result
+    }
 }
 
 module.exports = Playlist

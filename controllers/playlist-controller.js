@@ -89,6 +89,34 @@ const removeSongFromPlaylist = async(req, res) => {
         return
     }
 }
+const addToFavourites = async(req, res) => {
+    try{
+        const result = await Playlist.addToFavourites(req.params.id, req.body.tokenUserInfo._id)
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
+const removeFromFavourites = async(req, res) => {
+    try{
+        const result = await Playlist.removeFromFavourites(req.params.id, req.body.tokenUserInfo._id)
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
+const getMyFavourites = async(req, res) => {
+    const searchQuery = req.query.search || "";
+    try{
+        const result = await Playlist.getMyFavourites(req.body.tokenUserInfo._id, searchQuery)
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
 module.exports = {
     createPlaylist,
     addSongToPlaylist,
@@ -97,5 +125,8 @@ module.exports = {
     getPublicPlaylists,
     editPlaylist,
     getPlaylist,
-    removeSongFromPlaylist
+    removeSongFromPlaylist,
+    addToFavourites,
+    removeFromFavourites,
+    getMyFavourites
 }
