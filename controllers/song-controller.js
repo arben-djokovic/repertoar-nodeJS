@@ -61,10 +61,20 @@ const editSong = async(req, res, next) => {
         return
     }
 }
+const getRandomSong = async(req, res, next) => {
+    try{
+        const result = await Song.getRandomSong()
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
 module.exports = {
     addSong,
     getSongs,
     getSong,
     deleteSong,
-    editSong
+    editSong,
+    getRandomSong
 }
