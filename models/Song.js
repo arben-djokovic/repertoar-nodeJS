@@ -11,26 +11,33 @@ class Song {
     }
 
     async addSong(){
-        const result = await db.getDb().collection("song").insertOne({
+        const result = await db.getDb().collection("songs").insertOne({
             title: this.title,
-            artist_id: new ObjectId(this.artist_id),
+            artist_id: this.artist_id && new ObjectId(this.artist_id),
             text: this.text,
-            genre_id: new ObjectId(this.genre_id)
+            genre_id: this.genre_id && new ObjectId(this.genre_id) 
         })
         return result
     }
 
-    static async getAllSongs(searchQuery){
+    static async getAllSongs(searchQuery, genreQuery){
         const matchQuery = {
             $or: [
                 { title: { $regex: searchQuery, $options: 'i' } }, 
+                { text: { $regex: searchQuery, $options: 'i' } }, 
                 { 'artist.name': { $regex: searchQuery, $options: 'i' } }
             ]
         };
-        const result = await db.getDb().collection('song').aggregate([
+        if (genreQuery.length > 0) {
+            matchQuery['genre_id'] = new ObjectId(genreQuery);
+        }
+        
+
+        console.log(matchQuery)
+        const result = await db.getDb().collection('songs').aggregate([
             {
                 $lookup: {
-                    from: 'artist',
+                    from: 'artists',
                     localField: 'artist_id',
                     foreignField: '_id',
                     as: 'artist'
@@ -44,7 +51,7 @@ class Song {
             },
             {
                 $lookup: {
-                    from: 'genre',
+                    from: 'genres',
                     localField: 'genre_id',
                     foreignField: '_id',
                     as: 'genre'
@@ -68,14 +75,36 @@ class Song {
     } 
 
     static async getSong(songid){
-        const songidObjectId= new ObjectId(songid);
-        const result = await db.getDb().collection("song").find({_id: songidObjectId}).toArray()
-        return result[0]
+        const songidObjectId = new ObjectId(songid);
+    
+        const result = await db.getDb().collection("songs").aggregate([
+            { $match: { _id: songidObjectId } },
+            {
+                $lookup: {
+                    from: "artists",
+                    localField: "artist_id",
+                    foreignField: "_id",
+                    as: "artist"
+                }
+            },
+            {
+                $lookup: {
+                    from: "genres",
+                    localField: "genre_id",
+                    foreignField: "_id",
+                    as: "genre"
+                }
+            },
+            { $unwind: { path: "$artist", preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: "$genre", preserveNullAndEmptyArrays: true } }
+        ]).toArray();
+        
+        return result[0];
     }
 
     static async deleteSong(songid){
         const songidObjectId= new ObjectId(songid);
-        const result = await db.getDb().collection("song").deleteOne({_id: songidObjectId})
+        const result = await db.getDb().collection("songs").deleteOne({_id: songidObjectId})
         return result
     }
 
@@ -83,11 +112,42 @@ class Song {
         if(!updates){
             return {message: "Niste unijeli podatke za edit"}
         }
-        const result = await db.getDb().collection("song").updateOne({_id: new ObjectId(id)}, {$set: updates})
+        if(updates.artist_id){
+            updates.artist_id = new ObjectId(updates.artist_id)
+        }
+        if(updates.genre_id){
+            updates.genre_id = new ObjectId(updates.genre_id)
+        }
+        const result = await db.getDb().collection("songs").updateOne({_id: new ObjectId(id)}, {$set: updates})
         if(result.modifiedCount == 0){
             return {message: "Pjesma nije izmijenjena"}
         } 
         return result
+    }
+    static async getRandomSong() {
+        const result = await db.getDb().collection("songs").aggregate([
+            { $sample: { size: 1 } },
+            {
+                $lookup: {
+                    from: "artists",
+                    localField: "artist_id",
+                    foreignField: "_id",
+                    as: "artist"
+                }
+            },
+            {
+                $lookup: {
+                    from: "genres",
+                    localField: "genre_id",
+                    foreignField: "_id",
+                    as: "genre"
+                }
+            },
+            { $unwind: { path: "$artist", preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: "$genre", preserveNullAndEmptyArrays: true } }
+        ]).toArray();
+        
+        return result[0];
     }
 }
 

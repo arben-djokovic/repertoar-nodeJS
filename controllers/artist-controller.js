@@ -40,9 +40,20 @@ const editArtistName = async(req, res, next) => {
         return
     }
 }
+
+const getArtist = async(req, res) => {
+    try{
+        const result = await Artist.getArtist(req.params.id)
+        res.json(result)
+    }catch(err){
+        next(err)
+        return
+    }
+}
 module.exports = {
     addArtist,
     deleteArtist,
     editArtistName,
-    getAllArtist
+    getAllArtist,
+    getArtist
 }

@@ -23,11 +23,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use('/user', userRoutes)
-app.use('/genre', genreRoutes)
-app.use('/artist', artistRoutes)
-app.use('/song', songRoutes)
-app.use('/playlist', playlistRoutes)
+app.use('/users', userRoutes)
+app.use('/genres', genreRoutes)
+app.use('/artists', artistRoutes)
+app.use('/songs', songRoutes)
+app.use('/playlists', playlistRoutes)
 
 db.connection().then(() => {
     app.listen(PORT)

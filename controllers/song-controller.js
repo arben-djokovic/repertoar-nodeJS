@@ -17,8 +17,9 @@ const addSong = async(req, res, next) => {
 
 const getSongs = async(req, res, next) => {
     const searchQuery = req.query.search || "";
+    const genreQuery = req.query.genre || "";
     try{
-        const result = await Song.getAllSongs(searchQuery)
+        const result = await Song.getAllSongs(searchQuery, genreQuery)
         res.json(result)
     }catch(err){
         next(err)
@@ -60,10 +61,20 @@ const editSong = async(req, res, next) => {
         return
     }
 }
+const getRandomSong = async(req, res, next) => {
+    try{
+        const result = await Song.getRandomSong()
+        res.json(result)
+    }catch(err){
+        res.status(500).json({message: "Doslo je do greske"})
+        return
+    }
+}
 module.exports = {
     addSong,
     getSongs,
     getSong,
     deleteSong,
-    editSong
+    editSong,
+    getRandomSong
 }
