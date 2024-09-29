@@ -38,7 +38,7 @@ const getPublicPlaylists = async(req, res, next) => {
         const result = await Playlist.getPublicPlaylists(searchQuery)
         res.json(result)
     }catch(err){
-        res.status(500).json({message: "Doslo je do greske"})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }

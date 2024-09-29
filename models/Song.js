@@ -32,8 +32,6 @@ class Song {
             matchQuery['genre_id'] = new ObjectId(genreQuery);
         }
         
-
-        console.log(matchQuery)
         const result = await db.getDb().collection('songs').aggregate([
             {
                 $lookup: {
