@@ -1,13 +1,13 @@
 const { MongoClient } = require('mongodb');
 let database;
 
-let mongodbUrl = ''
+let mongodbUrl = 'mongodb://0.0.0.0:27017'
 if(process.env.MONGODB_URL){
     mongodbUrl = process.env.MONGODB_URL
 }
 const connection = async() => {
     try {
-        const client = new MongoClient(process.env.MONGODB_URL);
+        const client = new MongoClient(mongodbUrl);
         await client.connect();
         database = client.db('repertoar');
     } catch(err) {
