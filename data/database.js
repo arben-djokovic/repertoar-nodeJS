@@ -9,7 +9,7 @@ const connection = async() => {
     try {
         const client = new MongoClient(mongodbUrl);
         await client.connect();
-        database = client.db('repertoar');
+        database = client.db('Repertoar');
     } catch(err) {
         console.log(err);
         throw err;
