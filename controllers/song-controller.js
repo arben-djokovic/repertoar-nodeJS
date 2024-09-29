@@ -9,7 +9,7 @@ const addSong = async(req, res, next) => {
         const result = await newSong.addSong()
         res.json(result)
     }catch(err){
-        next(err)
+        console.log({err: err})
         // res.sendStatus(500)
         return
     }
@@ -22,7 +22,7 @@ const getSongs = async(req, res, next) => {
         const result = await Song.getAllSongs(searchQuery, genreQuery)
         res.json(result)
     }catch(err){
-        next(err)
+        console.log({err: err})
         return
     }
 }
@@ -31,7 +31,7 @@ const getSong = async(req, res, next) => {
         const result = await Song.getSong(req.params.id)
         res.json(result)
     }catch(err){
-        next(err)
+        console.log({err: err})
         return
     }
 }
@@ -41,7 +41,7 @@ const deleteSong = async(req, res, next) => {
         const result = await Song.deleteSong(req.params.id)
         res.json(result)
     }catch(err){
-        next(err)
+        console.log({err: err})
         return
     }
 }
