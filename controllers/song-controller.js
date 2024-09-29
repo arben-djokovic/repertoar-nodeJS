@@ -22,6 +22,7 @@ const getSongs = async(req, res, next) => {
         const result = await Song.getAllSongs(searchQuery, genreQuery)
         res.json(result)
     }catch(err){
+        res.json({err: err})
         console.log({err: err})
         return
     }
