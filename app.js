@@ -13,7 +13,12 @@ const cors = require('cors');
 const app = express();
 let PORT = process.env.PORT || 3000;
 
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:3000/', // replace with your frontend URL
+    credentials: true,
+  };
+  
+  app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
