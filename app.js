@@ -12,15 +12,13 @@ const cors = require('cors');
 
 const app = express()
 
-let PORT = 3000
-if(process.env.PORT){
-    PORT = process.env.PORT
-}
+let PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.urlencoded({extended: false}))
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser());
 
 app.use('/users', userRoutes)
@@ -32,3 +30,9 @@ app.use('/playlists', playlistRoutes)
 db.connection().then(() => {
     app.listen(PORT)
 })
+.catch((err) => {
+  console.error('Failed to connect to the database:', err);
+});
+
+
+module.exports = app;
