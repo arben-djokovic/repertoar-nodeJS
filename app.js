@@ -13,11 +13,22 @@ const cors = require('cors');
 const app = express();
 let PORT = process.env.PORT || 3000;
 
+const allowedOrigins = [
+  'https://repertoarcg.netlify.app',
+  'http://localhost:3000/',
+];
 
 app.use(cors({
-    origin: 'http://localhost:3000', // Replace with your frontend URL
-    credentials: true
-  }));
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, origin);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  credentials: true
+}));
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
