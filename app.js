@@ -13,40 +13,42 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Define allowed origins
 const allowedOrigins = [
   'https://repertoarcg.netlify.app',
   'http://localhost:3000'
 ];
 
-// Enable CORS with the specified options
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl requests)
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin); // Allow origin
+      callback(null, origin);
     } else {
-      callback(new Error('Not allowed by CORS')); // Block origin
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'], // Include OPTIONS
-  credentials: true // Allow credentials (cookies, authorization headers)
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: true
 }));
 
-// Middleware setup
-app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(bodyParser.json()); // Parse JSON bodies
-app.use(cookieParser()); // Parse cookies
+app.options('*', cors());
 
-// Define routes
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  console.log(`${req.method} request made to: ${req.url}`);
+  console.log('Request headers:', req.headers);
+  next();
+});
+
 app.use('/users', userRoutes);
 app.use('/genres', genreRoutes);
 app.use('/artists', artistRoutes);
 app.use('/songs', songRoutes);
 app.use('/playlists', playlistRoutes);
 
-// Initialize the database connection before starting the server
 db.connection()
   .then(() => {
     app.listen(PORT, () => {
@@ -57,4 +59,4 @@ db.connection()
     console.error("Failed to start the server:", err);
   });
 
-module.exports = app; // Export the app for testing or other uses
+module.exports = app;
