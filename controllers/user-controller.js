@@ -7,7 +7,7 @@ const login = async(req, res, next) => {
         const result = await newUser.login()
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -17,7 +17,7 @@ const singup = async(req, res, next) => {
         const result = await newUser.addUser()
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -26,7 +26,7 @@ const getUserById = async(req, res, next) => {
         const result = await User.getById(req.params.id)
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }

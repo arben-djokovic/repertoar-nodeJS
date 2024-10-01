@@ -7,7 +7,7 @@ const addGenre = async(req, res, next) => {
         const result = await newGenre.addGenre()
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -18,7 +18,7 @@ const deleteGenre = async(req, res, next) => {
         const result = await newGenre.deleteGenre()
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -27,7 +27,7 @@ const editGenre = async(req, res, next) => {
         const result = await Genre.updateGenre(req.params.id, req.body.newName)
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -37,7 +37,7 @@ const  getAllGenres = async(req, res, next) => {
         const result = await Genre.getAllGenres(searchQuery)
         res.json(result)
     }catch(err){
-        res.status(500).json({message: "Doslo je do greske"})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -46,7 +46,7 @@ const getGenre = async(req, res) => {
         const result = await Genre.getGenre(req.params.id)
         res.json(result)
     }catch(err){
-        res.status(500).json({message: "Doslo je do greske"})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }

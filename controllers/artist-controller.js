@@ -7,7 +7,7 @@ const getAllArtist = async(req, res, next) => {
         const result = await Artist.getAllArtist(searchQuery)
         res.json(result)
     }catch(err){
-        res.status(500).json({message: "Doslo je do greske"})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -17,7 +17,7 @@ const addArtist = async(req, res, next) => {
         const result = await newArtist.addArtist()
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -27,7 +27,7 @@ const deleteArtist = async(req, res, next) => {
         const result = await newArtist.deleteArtist()
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -36,7 +36,7 @@ const editArtistName = async(req, res, next) => {
         const result = await Artist.updateName(req.params.id, req.body.newName)
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -46,7 +46,7 @@ const getArtist = async(req, res) => {
         const result = await Artist.getArtist(req.params.id)
         res.json(result)
     }catch(err){
-        next(err)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }

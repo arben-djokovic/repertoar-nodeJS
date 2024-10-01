@@ -9,8 +9,7 @@ const addSong = async(req, res, next) => {
         const result = await newSong.addSong()
         res.json(result)
     }catch(err){
-        console.log({err: err})
-        // res.sendStatus(500)
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -22,7 +21,7 @@ const getSongs = async(req, res, next) => {
         const result = await Song.getAllSongs(searchQuery, genreQuery)
         res.json({result: result, true: true})
     }catch(err){
-        return res.status(500).json({err: err})
+        res.status(500).json({message: "Doslo je do greske", err: err})
     }
 }
 const getSong = async(req, res, next) => {
@@ -30,7 +29,7 @@ const getSong = async(req, res, next) => {
         const result = await Song.getSong(req.params.id)
         res.json(result)
     }catch(err){
-        console.log({err: err})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -40,7 +39,7 @@ const deleteSong = async(req, res, next) => {
         const result = await Song.deleteSong(req.params.id)
         res.json(result)
     }catch(err){
-        console.log({err: err})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -56,7 +55,7 @@ const editSong = async(req, res, next) => {
         const result = await Song.editSong(req.params.id, filteredUpdates)
         res.json(result)
     }catch(err){
-        res.status(500).json({message: "Doslo je do greske"})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
@@ -65,7 +64,7 @@ const getRandomSong = async(req, res, next) => {
         const result = await Song.getRandomSong()
         res.json(result)
     }catch(err){
-        res.status(500).json({message: "Doslo je do greske"})
+        res.status(500).json({message: "Doslo je do greske", err: err})
         return
     }
 }
