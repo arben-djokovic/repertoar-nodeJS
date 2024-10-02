@@ -17,13 +17,18 @@ const connection = async() => {
 };
 
  
-const getDb = () => {
+const getDb = async() => {
     if(database){
         console.log("connected")
         return database
     }
-    console.log("not connected")
-    throw { message: "Not connected"}
+    await connection()
+    
+    if(database){
+      return database
+    }else{
+      throw { message: "Not connected"}
+    }
 }
 
 
