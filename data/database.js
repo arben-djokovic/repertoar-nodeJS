@@ -22,8 +22,7 @@ const getDb = async() => {
         console.log("connected")
         return database
     }
-    await connection()
-    
+    database = await client.db('Repertoar');
     if(database){
       return database
     }else{
