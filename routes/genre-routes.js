@@ -6,6 +6,6 @@ const app = express.Router()
 app.get("/", getAllGenres)
 app.post("/add", adminRoute, addGenre)
 app.delete("/:id",adminRoute, checkId, deleteGenre)
-app.patch("/:id",adminRoute, checkId, editGenre)
+app.put("/:id",adminRoute, checkId, editGenre)
 app.get("/:id",checkId, getGenre)
 module.exports = app

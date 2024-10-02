@@ -7,6 +7,6 @@ const app = express.Router()
 app.get("/", adminRoute, getAllArtist)
 app.post("/add", adminRoute, addArtist)
 app.delete("/:id", adminRoute, checkId, deleteArtist)
-app.patch("/:id", adminRoute, checkId, editArtistName)
+app.put("/:id", adminRoute, checkId, editArtistName)
 app.get("/:id", adminRoute, checkId, getArtist)
 module.exports = app

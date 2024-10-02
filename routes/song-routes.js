@@ -8,7 +8,7 @@ app.get("/", getSongs)
 app.get("/random", getRandomSong)
 app.get("/:id", checkId, getSong)
 app.delete("/:id", checkId, adminRoute, deleteSong)
-app.patch("/:id", checkId, adminRoute, editSong)
+app.put("/:id", checkId, adminRoute, editSong)
 
 
 module.exports = app
