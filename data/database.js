@@ -1,43 +1,33 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
-
+const { MongoClient } = require('mongodb');
 let database;
 
-// Use the MongoDB URL from environment variables, fallback to local for development
-const mongodbUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/Repertoar';
-
-// Initialize the MongoClient with options, including Stable API version
-const client = new MongoClient(mongodbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverApi: { version: ServerApiVersion.v1 }, // Ensures backward compatibility with MongoDB 5.0+
-});
-
-const connection = async () => {
-  if (!database) {
+let mongodbUrl = ''
+if(process.env.MONGODB_URL){
+    mongodbUrl = process.env.MONGODB_URL
+}
+const connection = async() => {
     try {
-      await client.connect();
-      
-      await client.db('admin').command({ ping: 1 });
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
-
-      database = client.db('Repertoar');
-      console.log("Connected to MongoDB Atlas successfully.");
-    } catch (err) {
-      console.error("Failed to connect to MongoDB Atlas:", err);
-      throw err;
+        const client = new MongoClient(process.env.MONGODB_URL);
+        await client.connect();
+        database = client.db('Repertoar');
+    } catch(err) {
+        console.log("Connection error", err);
+        throw err;
     }
-  }
 };
 
-// Return the database instance if it's connected
-const getDb = async() => {
-  if (!database) {
-    await connection()
-  }
-  return database;
-};
+ 
+const getDb = () => {
+    if(database){
+        console.log("connected")
+        return database
+    }
+    console.log("not connected")
+    throw { message: "Not connected"}
+}
 
-module.exports = {
-  connection,
-  getDb,
-};
+
+module.exports ={
+    connection,
+    getDb
+}
